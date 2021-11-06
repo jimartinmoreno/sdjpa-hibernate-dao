@@ -1,12 +1,16 @@
 package guru.springframework.jdbc.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+//@Table(name = "BOOK")
+@NamedQueries({
+        @NamedQuery(name = "Book.findByName",
+                query = "SELECT b FROM Book b WHERE b.title = :title"),
+        @NamedQuery(name = "Book.findAll",
+                query = "SELECT b FROM Book b")
+})
 public class Book {
 
     @Id
@@ -16,7 +20,9 @@ public class Book {
     private String title;
     private String isbn;
     private String publisher;
-    private Long authorId;
+    @ManyToOne
+    @JoinColumn(name = "AUTHOR_ID")
+    private Author author;
 
     public Book() {
 
@@ -75,11 +81,22 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Author getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", author=" + author.getFirstName() + " " + author.getLastName() +
+                '}';
     }
 }
